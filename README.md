@@ -18,7 +18,6 @@ To set up the Text Analyzer, follow these steps:
 
 Clone the repository:
 
-git clone https://github.com/yourusername/text-analyzer.git cd text-analyzer
 Install required packages:
 
 Ensure you have Python installed, then install the required libraries:
