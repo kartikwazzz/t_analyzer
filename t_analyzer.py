@@ -15,40 +15,51 @@ def create_client(endpoint, key):
 
 def analyze_review(file_path):
     """Analyze the contents of a single review file."""
-    with open(file_path, encoding='utf8') as file:
-        content = file.read()
-    return content
+    try:
+        with open(file_path, encoding='utf8') as file:
+            content = file.read()
+        return content
+    except IOError as e:
+        print(f"Error reading file {file_path}: {e}")
+        return None
 
 def process_text(client, text):
     """Process the text through various analyses."""
-    # Language detection
-    language_result = client.detect_language(documents=[text])[0]
-    print(f"\nLanguage Detected: {language_result.primary_language.name}")
+    if not text:
+        return
+    
+    try:
+        # Language detection
+        language_result = client.detect_language(documents=[text])[0]
+        print(f"\nLanguage Detected: {language_result.primary_language.name}")
 
-    # Sentiment analysis
-    sentiment_result = client.analyze_sentiment(documents=[text])[0]
-    print(f"\nSentiment: {sentiment_result.sentiment}")
+        # Sentiment analysis
+        sentiment_result = client.analyze_sentiment(documents=[text])[0]
+        print(f"\nSentiment: {sentiment_result.sentiment}")
 
-    # Key phrase extraction
-    key_phrases_result = client.extract_key_phrases(documents=[text])[0].key_phrases
-    if key_phrases_result:
-        print("\nKey Phrases:")
-        for phrase in key_phrases_result:
-            print(f"\t{phrase}")
+        # Key phrase extraction
+        key_phrases_result = client.extract_key_phrases(documents=[text])[0].key_phrases
+        if key_phrases_result:
+            print("\nKey Phrases:")
+            for phrase in key_phrases_result:
+                print(f"\t{phrase}")
 
-    # Entity recognition
-    entities_result = client.recognize_entities(documents=[text])[0].entities
-    if entities_result:
-        print("\nEntities:")
-        for entity in entities_result:
-            print(f"\t{entity.text} ({entity.category})")
+        # Entity recognition
+        entities_result = client.recognize_entities(documents=[text])[0].entities
+        if entities_result:
+            print("\nEntities:")
+            for entity in entities_result:
+                print(f"\t{entity.text} ({entity.category})")
 
-    # Linked entity recognition
-    linked_entities_result = client.recognize_linked_entities(documents=[text])[0].entities
-    if linked_entities_result:
-        print("\nLinked Entities:")
-        for linked_entity in linked_entities_result:
-            print(f"\t{linked_entity.name} ({linked_entity.url})")
+        # Linked entity recognition
+        linked_entities_result = client.recognize_linked_entities(documents=[text])[0].entities
+        if linked_entities_result:
+            print("\nLinked Entities:")
+            for linked_entity in linked_entities_result:
+                print(f"\t{linked_entity.name} ({linked_entity.url})")
+
+    except Exception as e:
+        print(f"An error occurred while processing text: {e}")
 
 def main():
     try:
@@ -68,5 +79,6 @@ def main():
     except Exception as error:
         print(f"An error occurred: {error}")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
+
